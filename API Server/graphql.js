@@ -35,12 +35,12 @@ exports.schema = buildSchema(`
     type BrandReport {
         error: Error
         StarBucks: Int
-        Barista: Int
-        Seven11: Int
+        GloriaJeans: Int
+        SevenEleven: Int
         EZYMart: Int
-        HudsonCoffee: Int
-        Cafenatics: Int
-        PieFace: Int
+        IndustryBeans: Int
+        PatriciaCoffeeBrewers: Int
+        DukesCoffeeRoasters: Int
     }
 
     type Query {
@@ -63,19 +63,21 @@ exports.schema = buildSchema(`
     }
 
     enum PreferredPlace {
+        PlaceNone
         AtHome
         CoffeeSpecialists
         OutWithFriends
     }
 
     enum PreferredShop {
+        ShopNone
         StarBucks
-        Barista
-        Seven11
+        GloriaJeans
+        SevenEleven
         EZYMart
-        HudsonCoffee
-        Cafenatics
-        PieFace
+        IndustryBeans
+        PatriciaCoffeeBrewers
+        DukesCoffeeRoasters
     }
 
     input Survey {
@@ -83,8 +85,8 @@ exports.schema = buildSchema(`
         ageGroup: AgeGroup!
         gender: Gender!
         drinkCoffee: Boolean!
-        preferredPlace: PreferredPlace
-        preferredShop: PreferredShop
+        preferredPlace: PreferredPlace!
+        preferredShop: PreferredShop!
     }
 
     type Mutation {
@@ -127,12 +129,13 @@ exports.root = {
                                 S: "Info"
                             }
                         },
-                        UpdateExpression: "Set #G = if_not_exists(#G, :Z) + :O,  #GC = if_not_exists(#GC, :Z) + :GC" + (survey.drinkCoffee ? ", #P = if_not_exists(#P, :Z) + :O, #B = if_not_exists(#B, :Z) + :O" : ""),
+                        UpdateExpression: "Set #C = if_not_exists(#C, :Z) + :O, #G = if_not_exists(#G, :Z) + :O,  #GC = if_not_exists(#GC, :Z) + :GC, #P = if_not_exists(#P, :Z) + :O, #B = if_not_exists(#B, :Z) + :O",
                         ExpressionAttributeNames: {
                             "#G": survey.gender,
                             "#GC": survey.gender + "Coffee",
                             "#P": survey.preferredPlace,
-                            "#B": survey.preferredShop
+                            "#B": survey.preferredShop,
+                            "#C": "Count"
                         },
                         ExpressionAttributeValues: {
                             ":GC": {
@@ -261,7 +264,7 @@ exports.root = {
                 }
             },
             TableName: surveyDB.name,
-            ProjectionExpression: "StarBucks, Barista, Seven11, EZYMart, HudsonCoffee, Cafenatics, PieFace"
+            ProjectionExpression: "StarBucks, GloriaJeans, SevenEleven, EZYMart, IndustryBeans, PatriciaCoffeeBrewers, DukesCoffeeRoasters"
         }, (error, data) => {
             if (error) {
                 console.error("Brand Report Error: Get Info")
