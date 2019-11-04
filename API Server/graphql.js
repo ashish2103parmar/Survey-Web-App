@@ -6,7 +6,7 @@ var { CustomException, CustomExceptionCodes } = require("./exceptions");
 var { surveyDB } = require("./cred");
 var { validateEmail } = require("./util");
 var DynamoDB = require("aws-sdk/clients/dynamodb")
-var dynamodbClient = new DynamoDB({ region: "us-east-1" })
+var dynamodbClient = new DynamoDB({ region: "ap-south-1" })
 
 
 /**
